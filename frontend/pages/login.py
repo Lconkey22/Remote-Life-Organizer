@@ -5,12 +5,25 @@ def create_login_page():
     def login():
 
         # Inject custom CSS for colors + styling
-        ui.add_head_html("""
+         ui.add_head_html("""
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poiret+One&display=swap" rel="stylesheet">
+
         <style>
             body {
-                background: #f7f3eb; /* light beige */
-                font-family: 'Inter', sans-serif;
+                background: #1B301B; /* darkgreen background */
+                font-family: "Poiret One", sans-serif; /* GLOBAL FONT */
             }
+
+            .title {
+                color: #D9C6A9; /* light beige */
+                font-size: 32px;
+                font-weight: 400;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
             .login-card {
                 background: #ffffff;
                 border-radius: 16px;
@@ -18,29 +31,26 @@ def create_login_page():
                 border: 2px solid #e5e0d3;
                 box-shadow: 0px 4px 20px rgba(0,0,0,0.08);
             }
-            .title {
-                color: #2c4a3f; /* dark forest green */
-                font-size: 28px;
-                font-weight: 700;
-                text-align: center;
-                margin-bottom: 20px;
-            }
+
             .login-button {
-                background-color: #3a5f49 !important; /* forest green */
+                background-color: #3a5f49 !important; /* button color */
                 color: white !important;
             }
+
             .login-button:hover {
                 background-color: #2d4b3a !important;
             }
+
             .input-label {
                 color: #2c4a3f;
-                font-weight: 600;
+                font-weight: 400;
             }
         </style>
         """)
 
+
         # Center content on screen
-        with ui.column().classes('items-center justify-center min-h-screen'):
+        with ui.row().classes('w-full h-screen justify-center items-center'):
 
             # Title
             ui.label("Remote Life Organizer").classes("title")
