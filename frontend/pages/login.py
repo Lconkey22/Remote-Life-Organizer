@@ -5,14 +5,14 @@ def create_login_page():
     def login():
 
         # Inject custom CSS for colors + styling
-         ui.add_head_html("""
+        ui.add_head_html("""
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Poiret+One&display=swap" rel="stylesheet">
 
         <style>
             body {
-                background: #1B301B; /* darkgreen background */
+                background: #1B301B; /* dark green background */
                 font-family: "Poiret One", sans-serif; /* GLOBAL FONT */
             }
 
@@ -48,9 +48,8 @@ def create_login_page():
         </style>
         """)
 
-
         # Center content on screen
-        with ui.row().classes('w-full h-screen justify-center items-center'):
+        with ui.row().classes('w-full h-screen justify-center items-center flex flex-col'):
 
             # Title
             ui.label("Remote Life Organizer").classes("title")
@@ -58,13 +57,20 @@ def create_login_page():
             # Login card
             with ui.card().classes('login-card w-96'):
 
-                ui.label("Welcome back 👋").classes("text-xl font-semibold text-[#2c4a3f] mb-4")
+                ui.label("Welcome back 👋").classes(
+                    "text-xl font-semibold text-[#2c4a3f] mb-4"
+                )
 
                 username = ui.input("Username").classes('w-full input-label')
-                password = ui.input("Password", password=True, password_toggle_button=True).classes('w-full input-label')
+                password = ui.input(
+                    "Password",
+                    password=True,
+                    password_toggle_button=True
+                ).classes('w-full input-label')
 
                 message = ui.label("").classes('text-red-600 mt-2')
 
+                # Temporary users (no database yet)
                 users = {
                     "chelsie": "1234",
                     "lindsey": "abcd",
