@@ -1,19 +1,45 @@
 from nicegui import ui
 
+# -------------------------
+# LOGIN PAGE
+# -------------------------
+@ui.page('/login')
+def login_page():
+    ui.label("Login Screen").classes("text-2xl font-bold")
+    ui.button("Go to Home", on_click=lambda: ui.open('/home'))
+
+
+# -------------------------
+# ADD EVENTS PAGE
+# -------------------------
+@ui.page('/add-events')
+def add_events():
+    ui.label("Add Events Page").classes("text-2xl font-bold")
+    ui.button("Back to Home", on_click=lambda: ui.open('/home'))
+
+
+# -------------------------
+# HOME PAGE
+# -------------------------
 def create_home_page():
+
     @ui.page('/home')
     def home():
 
-        # Side menu (closed by default)
+        # --- Side Drawer ---
         drawer = ui.left_drawer(value=False).classes("bg-white")
         with drawer:
             ui.label("Menu").classes("text-xl font-bold p-4")
             ui.separator()
-            ui.button("Home", on_click=lambda: ui.notify("Home"))
+
+            ui.button("Home", on_click=lambda: ui.open('/home'))
             ui.button("Upcoming Events", on_click=lambda: ui.notify("Upcoming Events"))
             ui.button("Upcoming Homework", on_click=lambda: ui.notify("Upcoming Homework"))
             ui.button("Calendar", on_click=lambda: ui.notify("Calendar"))
-            ui.button("Add Events", on_click=lambda: ui.notify("Add Events"))
+
+            # real navigation to events page
+            ui.button("Add Events", on_click=lambda: ui.open('/add-events'))
+
             ui.button("Time Tracker", on_click=lambda: ui.notify("Time Tracker"))
 
             ui.separator().classes("my-3")
@@ -27,7 +53,14 @@ def create_home_page():
                 "w-full text-left"
             )
 
-        # Top header
+            # --- SIGN OUT BUTTON ---
+            ui.separator().classes("my-4")
+            ui.button("Sign Out", on_click=lambda: ui.open('/login')).classes(
+                "w-full text-left text-red-600"
+            )
+
+
+        # --- Header ---
         with ui.header().classes("h-24 bg-blue-600 text-white relative flex items-center"):
             ui.button(icon="menu", on_click=lambda: drawer.toggle()).classes("text-white")
 
@@ -40,12 +73,19 @@ def create_home_page():
                     )
                 ui.label("Hello, Username").classes("text-lg font-semibold mt-2")
 
-        # Page content with 3 data blocks
+        # --- Page Content ---
         with ui.column().classes("p-4 items-center space-y-6"):
             for i in range(1, 4):
                 with ui.card().classes("w-96 h-64 overflow-auto border-2 border-gray-300"):
                     ui.label(f"Data Block {i}").classes("text-xl font-bold mb-2")
-
                     for j in range(20):
                         ui.label(f"Item {j + 1} in block {i}")
+
+
+# Register home page
+create_home_page()
+
+# Run app
+ui.run()
+
 
