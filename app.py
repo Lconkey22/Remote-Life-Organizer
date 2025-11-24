@@ -1,13 +1,16 @@
 from nicegui import ui
 
-# Redirect root ("/") → login page
+# Import your page modules so their @ui.page decorators run
+import frontend.pages.home
+import frontend.pages.login
+import frontend.pages.events
+
+# Redirect root to login
 @ui.page('/')
 def index():
     ui.navigate.to('/login')
 
-# No manual imports needed:
-# Pages will auto-register because they use @ui.page() in their own files.
-
 ui.run(title='Remote Life Organizer')
+
 
 
