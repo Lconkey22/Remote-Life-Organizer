@@ -6,7 +6,7 @@ from nicegui import ui
 @ui.page('/login')
 def login_page():
     ui.label("Login Screen").classes("text-2xl font-bold")
-    ui.button("Go to Home", on_click=lambda: ui.open('/home'))
+    ui.button("Go to Home", on_click=lambda: ui.navigate.to('/home'))
 
 
 # -------------------------
@@ -18,7 +18,7 @@ def add_events():
     add_shared_menu()
 
     ui.label("Add Events Page").classes("text-2xl font-bold")
-    ui.button("Back to Home", on_click=lambda: ui.open('/home'))
+    ui.button("Back to Home", on_click=lambda: ui.navigate.to('/home'))
 
 
 # -------------------------
@@ -32,12 +32,12 @@ def add_shared_menu():
         ui.separator()
 
         # NAVIGATION BUTTONS
-        ui.button("Home", on_click=lambda: ui.open('/home'))
+        ui.button("Home", on_click=lambda: ui.navigate.to('/home'))
         ui.button("Upcoming Events", on_click=lambda: ui.notify("Upcoming Events"))
         ui.button("Upcoming Homework", on_click=lambda: ui.notify("Upcoming Homework"))
         ui.button("Calendar", on_click=lambda: ui.notify("Calendar"))
 
-        ui.button("Add Events", on_click=lambda: ui.open('/events'))
+        ui.button("Add Events", on_click=lambda: ui.navigate.to('/events'))
 
         ui.button("Time Tracker", on_click=lambda: ui.notify("Time Tracker"))
 
@@ -54,7 +54,7 @@ def add_shared_menu():
 
         # SIGN OUT BUTTON
         ui.separator().classes("my-4")
-        ui.button("Sign Out", on_click=lambda: ui.open('/login')).classes(
+        ui.button("Sign Out", on_click=lambda: ui.navigate.to('/login')).classes(
             "w-full text-left text-red-600"
         )
 
