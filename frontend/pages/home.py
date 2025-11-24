@@ -14,8 +14,62 @@ def login_page():
 # -------------------------
 @ui.page('/events')
 def add_events():
+    # REUSABLE MENU (so drawer works here too)
+    add_shared_menu()
+
     ui.label("Add Events Page").classes("text-2xl font-bold")
     ui.button("Back to Home", on_click=lambda: ui.open('/home'))
+
+
+# -------------------------
+# SHARED MENU (drawer shown on every page)
+# -------------------------
+def add_shared_menu():
+
+    drawer = ui.left_drawer(value=False).classes("bg-white")
+    with drawer:
+        ui.label("Menu").classes("text-xl font-bold p-4")
+        ui.separator()
+
+        # NAVIGATION BUTTONS
+        ui.button("Home", on_click=lambda: ui.open('/home'))
+        ui.button("Upcoming Events", on_click=lambda: ui.notify("Upcoming Events"))
+        ui.button("Upcoming Homework", on_click=lambda: ui.notify("Upcoming Homework"))
+        ui.button("Calendar", on_click=lambda: ui.notify("Calendar"))
+
+        ui.button("Add Events", on_click=lambda: ui.open('/events'))
+
+        ui.button("Time Tracker", on_click=lambda: ui.notify("Time Tracker"))
+
+        ui.separator().classes("my-3")
+        for name in ["Settings", "Profile+", "Search", "Help"]:
+            ui.button(name, on_click=lambda n=name: ui.notify(n)).classes(
+                "w-full text-left py-2"
+            )
+
+        ui.separator().classes("my-4")
+        ui.button("Profile", on_click=lambda: ui.notify("Profile")).classes(
+            "w-full text-left"
+        )
+
+        # SIGN OUT BUTTON
+        ui.separator().classes("my-4")
+        ui.button("Sign Out", on_click=lambda: ui.open('/login')).classes(
+            "w-full text-left text-red-600"
+        )
+
+    # HEADER (same for all pages)
+    with ui.header().classes("h-24 bg-blue-600 text-white relative flex items-center"):
+        ui.button(icon="menu", on_click=lambda: drawer.toggle()).classes("text-white")
+
+        with ui.element("div").classes(
+            "absolute left-1/2 -translate-x-1/2 flex flex-col items-center"
+        ):
+            with ui.element("div").classes("w-12 h-12 rounded-full overflow-hidden"):
+                ui.image("profile_picture_example.jpg").classes(
+                    "w-full h-full object-cover object-center"
+                )
+            ui.label("Hello, Username").classes("text-lg font-semibold mt-2")
 
 
 # -------------------------
@@ -26,52 +80,8 @@ def create_home_page():
     @ui.page('/home')
     def home():
 
-        # --- Side Drawer ---
-        drawer = ui.left_drawer(value=False).classes("bg-white")
-        with drawer:
-            ui.label("Menu").classes("text-xl font-bold p-4")
-            ui.separator()
-
-            ui.button("Home", on_click=lambda: ui.open('/home'))
-            ui.button("Upcoming Events", on_click=lambda: ui.notify("Upcoming Events"))
-            ui.button("Upcoming Homework", on_click=lambda: ui.notify("Upcoming Homework"))
-            ui.button("Calendar", on_click=lambda: ui.notify("Calendar"))
-
-            # real navigation to events page
-            ui.button("Add Events", on_click=lambda: ui.open('/events'))
-
-            ui.button("Time Tracker", on_click=lambda: ui.notify("Time Tracker"))
-
-            ui.separator().classes("my-3")
-            for name in ["Settings", "Profile+", "Search", "Help"]:
-                ui.button(name, on_click=lambda n=name: ui.notify(n)).classes(
-                    "w-full text-left py-2"
-                )
-
-            ui.separator().classes("my-4")
-            ui.button("Profile", on_click=lambda: ui.notify("Profile")).classes(
-                "w-full text-left"
-            )
-
-            # --- SIGN OUT BUTTON ---
-            ui.separator().classes("my-4")
-            ui.button("Sign Out", on_click=lambda: ui.open('/login')).classes(
-                "w-full text-left text-red-600"
-            )
-
-
-        # --- Header ---
-        with ui.header().classes("h-24 bg-blue-600 text-white relative flex items-center"):
-            ui.button(icon="menu", on_click=lambda: drawer.toggle()).classes("text-white")
-
-            with ui.element("div").classes(
-                "absolute left-1/2 -translate-x-1/2 flex flex-col items-center"
-            ):
-                with ui.element("div").classes("w-12 h-12 rounded-full overflow-hidden"):
-                    ui.image("profile_picture_example.jpg").classes(
-                        "w-full h-full object-cover object-center"
-                    )
-                ui.label("Hello, Username").classes("text-lg font-semibold mt-2")
+        # Add drawer + header so they appear on home screen too
+        add_shared_menu()
 
         # --- Page Content ---
         with ui.column().classes("p-4 items-center space-y-6"):
