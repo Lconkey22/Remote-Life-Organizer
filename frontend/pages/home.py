@@ -12,7 +12,7 @@ def login_page():
 # -------------------------
 # ADD EVENTS PAGE
 # -------------------------
-@ui.page('/add-events')
+@ui.page('/events')
 def add_events():
     ui.label("Add Events Page").classes("text-2xl font-bold")
     ui.button("Back to Home", on_click=lambda: ui.open('/home'))
@@ -38,7 +38,7 @@ def create_home_page():
             ui.button("Calendar", on_click=lambda: ui.notify("Calendar"))
 
             # real navigation to events page
-            ui.button("Add Events", on_click=lambda: ui.open('/add-events'))
+            ui.button("Add Events", on_click=lambda: ui.open('/events'))
 
             ui.button("Time Tracker", on_click=lambda: ui.notify("Time Tracker"))
 
