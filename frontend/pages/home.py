@@ -1,7 +1,7 @@
 from nicegui import ui
 
 # -------------------------
-# LOGIN PAGE
+# LOGIN PAGE (NO MENU HERE)
 # -------------------------
 @ui.page('/login')
 def login_page():
@@ -10,19 +10,7 @@ def login_page():
 
 
 # -------------------------
-# ADD EVENTS PAGE
-# -------------------------
-@ui.page('/events')
-def add_events():
-    # REUSABLE MENU (so drawer works here too)
-    add_shared_menu()
-
-    ui.label("Add Events Page").classes("text-2xl font-bold")
-    ui.button("Back to Home", on_click=lambda: ui.navigate.to('/home'))
-
-
-# -------------------------
-# SHARED MENU (drawer shown on every page)
+# SHARED MENU FOR ALL INTERNAL PAGES
 # -------------------------
 def add_shared_menu():
 
@@ -31,14 +19,11 @@ def add_shared_menu():
         ui.label("Menu").classes("text-xl font-bold p-4")
         ui.separator()
 
-        # NAVIGATION BUTTONS
         ui.button("Home", on_click=lambda: ui.navigate.to('/home'))
         ui.button("Upcoming Events", on_click=lambda: ui.notify("Upcoming Events"))
         ui.button("Upcoming Homework", on_click=lambda: ui.notify("Upcoming Homework"))
         ui.button("Calendar", on_click=lambda: ui.notify("Calendar"))
-
         ui.button("Add Events", on_click=lambda: ui.navigate.to('/events'))
-
         ui.button("Time Tracker", on_click=lambda: ui.notify("Time Tracker"))
 
         ui.separator().classes("my-3")
@@ -48,17 +33,14 @@ def add_shared_menu():
             )
 
         ui.separator().classes("my-4")
-        ui.button("Profile", on_click=lambda: ui.notify("Profile")).classes(
-            "w-full text-left"
-        )
+        ui.button("Profile", on_click=lambda: ui.notify("Profile")).classes("w-full text-left")
 
-        # SIGN OUT BUTTON
         ui.separator().classes("my-4")
         ui.button("Sign Out", on_click=lambda: ui.navigate.to('/login')).classes(
             "w-full text-left text-red-600"
         )
 
-    # HEADER (same for all pages)
+    # ---- HEADER ----
     with ui.header().classes("h-24 bg-blue-600 text-white relative flex items-center"):
         ui.button(icon="menu", on_click=lambda: drawer.toggle()).classes("text-white")
 
@@ -75,27 +57,32 @@ def add_shared_menu():
 # -------------------------
 # HOME PAGE
 # -------------------------
-def create_home_page():
+@ui.page('/home')
+def home_page():
+    add_shared_menu()
 
-    @ui.page('/home')
-    def home():
-
-        # Add drawer + header so they appear on home screen too
-        add_shared_menu()
-
-        # --- Page Content ---
-        with ui.column().classes("p-4 items-center space-y-6"):
-            for i in range(1, 4):
-                with ui.card().classes("w-96 h-64 overflow-auto border-2 border-gray-300"):
-                    ui.label(f"Data Block {i}").classes("text-xl font-bold mb-2")
-                    for j in range(20):
-                        ui.label(f"Item {j + 1} in block {i}")
+    with ui.column().classes("p-4 items-center space-y-6"):
+        for i in range(1, 4):
+            with ui.card().classes("w-96 h-64 overflow-auto border-2 border-gray-300"):
+                ui.label(f"Data Block {i}").classes("text-xl font-bold mb-2")
+                for j in range(20):
+                    ui.label(f"Item {j + 1} in block {i}")
 
 
-# Register home page
-create_home_page()
+# -------------------------
+# ADD EVENTS PAGE
+# -------------------------
+@ui.page('/events')
+def add_events_page():
+    add_shared_menu()
 
-# Run app
+    ui.label("Add Events Page").classes("text-2xl font-bold")
+    ui.button("Back to Home", on_click=lambda: ui.navigate.to('/home'))
+
+
+# -------------------------
+# RUN APP
+# -------------------------
 ui.run()
 
 
