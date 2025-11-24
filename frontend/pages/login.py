@@ -70,22 +70,17 @@ def create_login_page():
 
                 message = ui.label("").classes('text-red-600 mt-2')
 
+                """
                 # Temporary users (no database yet)
                 users = {
                     "chelsie": "1234",
                     "lindsey": "abcd",
                     "nathan": "pass",
                 }
-
+                """
                 def attempt_login():
-                    u = username.value
-                    p = password.value
+                    ui.navigate.to('/home')   # Always go to home
 
-                    if u in users and users[u] == p:
-                        message.set_text("")
-                        ui.navigate.to('/home')
-                    else:
-                        message.set_text("❌ Invalid username or password")
 
                 ui.button("Login", on_click=attempt_login).classes(
                     "w-full login-button mt-4 py-2 rounded-lg text-white font-semibold"
