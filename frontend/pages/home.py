@@ -1,13 +1,5 @@
 from nicegui import ui
 
-# -------------------------
-# LOGIN PAGE (NO MENU HERE)
-# -------------------------
-@ui.page('/login')
-def login_page():
-    ui.label("Login Screen").classes("text-2xl font-bold")
-    ui.button("Go to Home", on_click=lambda: ui.navigate.to('/home'))
-
 
 # -------------------------
 # SHARED MENU FOR ALL INTERNAL PAGES
