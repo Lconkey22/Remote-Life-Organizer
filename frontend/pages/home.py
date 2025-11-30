@@ -61,16 +61,6 @@ def home_page():
                     ui.label(f"Item {j + 1} in block {i}")
 
 
-# -------------------------
-# ADD EVENTS PAGE
-# -------------------------
-@ui.page('/events')
-def add_events_page():
-    add_shared_menu()
-
-    ui.label("Add Events Page").classes("text-2xl font-bold")
-    ui.button("Back to Home", on_click=lambda: ui.navigate.to('/home'))
-
 
 # -------------------------
 # RUN APP
