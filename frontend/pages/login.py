@@ -90,4 +90,4 @@ def create_login_page():
                     "text-gray-600 text-sm mt-3 text-center"
                 )
 
-ui.run
+ui.run()
