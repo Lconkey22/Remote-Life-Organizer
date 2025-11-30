@@ -1,8 +1,8 @@
 from nicegui import ui
 
 # Import your page modules so their @ui.page decorators run
-import frontend.pages.home
 import frontend.pages.login
+import frontend.pages.home
 import frontend.pages.events
 
 # Redirect root to login
