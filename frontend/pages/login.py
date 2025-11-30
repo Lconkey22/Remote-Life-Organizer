@@ -1,8 +1,7 @@
 from nicegui import ui
 
-def create_login_page():
-    @ui.page('/login')
-    def login():
+@ui.page('/login')
+def login():
 
         # Inject custom CSS for colors + styling
         ui.add_head_html("""
