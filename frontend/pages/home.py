@@ -26,7 +26,7 @@ def add_shared_menu():
             ui.button(name, on_click=lambda n=name: ui.notify(n)).classes("drawer-btn w-full text-left py-2")
 
         ui.separator().classes("my-4")
-        ui.button("Profile", on_click=lambda: ui.notify("Profile")).classes("drawer-btn w-full text-left")
+        ui.button("Profile", on_click=lambda: ui.navigate.to('/profile')).classes("drawer-btn w-full text-left")
 
         ui.separator().classes("my-4")
         ui.button("Sign Out", on_click=lambda: ui.navigate.to('/login')).classes(
