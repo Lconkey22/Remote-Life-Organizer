@@ -1,6 +1,9 @@
 from nicegui import ui
+from frontend.theme import apply_global_theme
 
-# Import your page modules so their @ui.page decorators run
+# Apply theme globally once
+apply_global_theme()
+
 import frontend.pages.events
 import frontend.pages.home
 import frontend.pages.login
