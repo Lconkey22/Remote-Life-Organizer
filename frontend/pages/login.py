@@ -88,5 +88,3 @@ def login():
                 ui.label("Need an account? (Coming soon)").classes(
                     "text-gray-600 text-sm mt-3 text-center"
                 )
-
-ui.run()
