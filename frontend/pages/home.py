@@ -4,64 +4,6 @@ from nicegui import ui
 # SHARED MENU FOR ALL PAGES
 # -------------------------
 def add_shared_menu():
-
-    # ---- Inject earthy themed CSS only once ----
-    ui.add_head_html("""
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poiret+One&display=swap" rel="stylesheet">
-
-    <style>
-        body {
-            background: #1B301B;  /* deep forest green */
-            font-family: "Poiret One", sans-serif;
-        }
-
-        .header-bar {
-            background: linear-gradient(90deg, #2E4A3A, #1F3528);
-            border-bottom: 2px solid #D9C6A9;
-        }
-
-        .drawer-bg {
-            background: #F4EDE1 !important;   /* warm beige */
-        }
-
-        .drawer-btn {
-            color: #2E4A3A !important;
-            font-weight: 600;
-        }
-
-        .drawer-btn:hover {
-            background: #E6D9C7 !important;
-        }
-
-        .signout-btn {
-            color: #7a1f1f !important;
-            font-weight: bold;
-        }
-
-        .home-card {
-            background: #F9F5EE;
-            border-radius: 18px;
-            border: 1.5px solid #D9C6A9;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-        }
-
-        .home-title {
-            color: #D9C6A9;
-            font-size: 30px;
-            font-weight: 400;
-            text-shadow: 0px 1px 3px rgba(0,0,0,0.4);
-            margin-bottom: 20px;
-        }
-
-        .item-text {
-            color: #2E4A3A;
-            font-size: 14px;
-        }
-    </style>
-    """)
-
     # ---- Drawer ----
     drawer = ui.left_drawer(value=False).classes("drawer-bg shadow-lg")
     with drawer:
