@@ -1,49 +1,102 @@
 from nicegui import ui
 
-
 # -------------------------
-# SHARED MENU FOR ALL INTERNAL PAGES
+# SHARED MENU FOR ALL PAGES
 # -------------------------
 def add_shared_menu():
 
-    drawer = ui.left_drawer(value=False).classes("bg-white")
+    # ---- Inject earthy themed CSS only once ----
+    ui.add_head_html("""
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poiret+One&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background: #1B301B;  /* deep forest green */
+            font-family: "Poiret One", sans-serif;
+        }
+
+        .header-bar {
+            background: linear-gradient(90deg, #2E4A3A, #1F3528);
+            border-bottom: 2px solid #D9C6A9;
+        }
+
+        .drawer-bg {
+            background: #F4EDE1 !important;   /* warm beige */
+        }
+
+        .drawer-btn {
+            color: #2E4A3A !important;
+            font-weight: 600;
+        }
+
+        .drawer-btn:hover {
+            background: #E6D9C7 !important;
+        }
+
+        .signout-btn {
+            color: #7a1f1f !important;
+            font-weight: bold;
+        }
+
+        .home-card {
+            background: #F9F5EE;
+            border-radius: 18px;
+            border: 1.5px solid #D9C6A9;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .home-title {
+            color: #D9C6A9;
+            font-size: 30px;
+            font-weight: 400;
+            text-shadow: 0px 1px 3px rgba(0,0,0,0.4);
+            margin-bottom: 20px;
+        }
+
+        .item-text {
+            color: #2E4A3A;
+            font-size: 14px;
+        }
+    </style>
+    """)
+
+    # ---- Drawer ----
+    drawer = ui.left_drawer(value=False).classes("drawer-bg shadow-lg")
     with drawer:
-        ui.label("Menu").classes("text-xl font-bold p-4")
+        ui.label("Menu").classes("text-xl font-bold p-4 text-[#2E4A3A]")
         ui.separator()
 
-        ui.button("Home", on_click=lambda: ui.navigate.to('/home'))
-        ui.button("Upcoming Events", on_click=lambda: ui.notify("Upcoming Events"))
-        ui.button("Upcoming Homework", on_click=lambda: ui.notify("Upcoming Homework"))
-        ui.button("Calendar", on_click=lambda: ui.notify("Calendar"))
-        ui.button("Add Events", on_click=lambda: ui.navigate.to('/events'))
-        ui.button("Time Tracker", on_click=lambda: ui.notify("Time Tracker"))
+        ui.button("Home", on_click=lambda: ui.navigate.to('/home')).classes("drawer-btn w-full text-left")
+        ui.button("Upcoming Events", on_click=lambda: ui.notify("Upcoming Events")).classes("drawer-btn w-full text-left")
+        ui.button("Upcoming Homework", on_click=lambda: ui.notify("Upcoming Homework")).classes("drawer-btn w-full text-left")
+        ui.button("Calendar", on_click=lambda: ui.notify("Calendar")).classes("drawer-btn w-full text-left")
+        ui.button("Add Events", on_click=lambda: ui.navigate.to('/events')).classes("drawer-btn w-full text-left")
+        ui.button("Time Tracker", on_click=lambda: ui.notify("Time Tracker")).classes("drawer-btn w-full text-left")
 
         ui.separator().classes("my-3")
         for name in ["Settings", "Profile+", "Search", "Help"]:
             ui.button(name, on_click=lambda n=name: ui.notify(n)).classes(
-                "w-full text-left py-2"
+                "drawer-btn w-full text-left py-2"
             )
 
         ui.separator().classes("my-4")
-        ui.button("Profile", on_click=lambda: ui.notify("Profile")).classes("w-full text-left")
+        ui.button("Profile", on_click=lambda: ui.notify("Profile")).classes("drawer-btn w-full text-left")
 
         ui.separator().classes("my-4")
         ui.button("Sign Out", on_click=lambda: ui.navigate.to('/login')).classes(
-            "w-full text-left text-red-600"
+            "signout-btn w-full text-left py-2"
         )
 
-    # ---- HEADER ----
-    with ui.header().classes("h-24 bg-blue-600 text-white relative flex items-center"):
-        ui.button(icon="menu", on_click=lambda: drawer.toggle()).classes("text-white")
+    # ---- Header ----
+    with ui.header().classes("header-bar h-24 text-white relative flex items-center shadow-lg"):
+        ui.button(icon="menu", on_click=lambda: drawer.toggle()).classes("text-white mr-4")
 
-        with ui.element("div").classes(
-            "absolute left-1/2 -translate-x-1/2 flex flex-col items-center"
-        ):
-            with ui.element("div").classes("w-12 h-12 rounded-full overflow-hidden"):
-                ui.image("profile_picture_example.jpg").classes(
-                    "w-full h-full object-cover object-center"
-                )
-            ui.label("Hello, Username").classes("text-lg font-semibold mt-2")
+        with ui.element("div").classes("absolute left-1/2 -translate-x-1/2 flex flex-col items-center"):
+            with ui.element("div").classes("w-14 h-14 rounded-full overflow-hidden border-2 border-[#D9C6A9] shadow-md"):
+                ui.image("profile_picture_example.jpg").classes("w-full h-full object-cover")
+            ui.label("Hello, Username").classes("text-lg font-semibold mt-2 text-[#F4EDE1]")
 
 
 # -------------------------
@@ -53,18 +106,14 @@ def add_shared_menu():
 def home_page():
     add_shared_menu()
 
-    with ui.column().classes("p-4 items-center space-y-6"):
-        for i in range(1, 4):
-            with ui.card().classes("w-96 h-64 overflow-auto border-2 border-gray-300"):
-                ui.label(f"Data Block {i}").classes("text-xl font-bold mb-2")
-                for j in range(20):
-                    ui.label(f"Item {j + 1} in block {i}")
+    ui.label("Your Dashboard").classes("home-title text-center mt-6")
 
+    with ui.column().classes("p-4 items-center space-y-8 w-full"):
+        for i in range(1, 3 + 1):  # 3 cards
+            with ui.card().classes("home-card w-10/12 md:w-2/3 lg:w-1/2 p-4"):
+                ui.label(f"Data Block {i}").classes("text-xl font-bold mb-2 text-[#2E4A3A]")
 
-
-# -------------------------
-# RUN APP
-# -------------------------
-ui.run()
+                for j in range(5):
+                    ui.label(f"• Item {j + 1} in block {i}").classes("item-text")
 
 
