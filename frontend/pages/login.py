@@ -1,7 +1,11 @@
 from nicegui import ui
+from frontend.theme import apply_global_theme
 
 @ui.page('/login')
 def login_page():
+
+    # Apply global theme (background, fonts, colors)
+    apply_global_theme()
 
     # Centered layout
     with ui.row().classes('w-full h-screen justify-center items-center flex flex-col'):
@@ -35,4 +39,3 @@ def login_page():
             ui.label("Need an account? (Coming soon)").classes(
                 "earth-text text-sm mt-3 text-center"
             )
-
