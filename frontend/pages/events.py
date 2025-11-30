@@ -9,7 +9,6 @@ event_type = {"value": None}
 # SHARED MENU FOR ALL PAGES
 # -------------------------
 def add_shared_menu():
-    # Drawer
     drawer = ui.left_drawer(value=False).classes("drawer-bg shadow-lg")
     with drawer:
         ui.label("Menu").classes("text-xl font-bold p-4 text-[#2E4A3A]")
@@ -36,9 +35,7 @@ def add_shared_menu():
     with ui.header().classes("header-bar h-24 text-white relative flex items-center shadow-lg"):
         ui.button(icon="menu", on_click=lambda: drawer.toggle()).classes("text-white mr-4")
 
-        with ui.element("div").classes(
-            "absolute left-1/2 -translate-x-1/2 flex flex-col items-center"
-        ):
+        with ui.element("div").classes("absolute left-1/2 -translate-x-1/2 flex flex-col items-center"):
             with ui.element("div").classes("w-14 h-14 rounded-full overflow-hidden border-2 border-[#D9C6A9] shadow-md"):
                 ui.image("profile_picture_example.jpg").classes("w-full h-full object-cover")
             ui.label("Hello, Username").classes("text-lg font-semibold mt-2 text-[#F4EDE1]")
@@ -70,7 +67,7 @@ def create_event(selected_date, event_type_name, start_time, end_time):
 
 
 # -------------------------
-# EVENTS PAGE
+# EVENTS PAGE  (/events)
 # -------------------------
 @ui.page('/events')
 def events_page():
@@ -80,17 +77,13 @@ def events_page():
 
     with ui.column().classes("items-center space-y-6"):
 
-        # Event Type Buttons (styled)
-        ui.button("Work Shift", on_click=lambda: event_type.update(value="Work"))\
-            .classes("event-btn w-64")
-        ui.button("Family Event", on_click=lambda: event_type.update(value="Family"))\
-            .classes("event-btn w-64")
-        ui.button("School Event", on_click=lambda: event_type.update(value="School"))\
-            .classes("event-btn w-64")
-        ui.button("Other Event", on_click=lambda: event_type.update(value="Other"))\
-            .classes("event-btn w-64")
+        # Event type buttons
+        ui.button("Work Shift", on_click=lambda: event_type.update(value="Work")).classes("event-btn w-64")
+        ui.button("Family Event", on_click=lambda: event_type.update(value="Family")).classes("event-btn w-64")
+        ui.button("School Event", on_click=lambda: event_type.update(value="School")).classes("event-btn w-64")
+        ui.button("Other Event", on_click=lambda: event_type.update(value="Other")).classes("event-btn w-64")
 
-        # Card layout
+        # Event input card
         with ui.card().classes("events-card w-11/12 md:w-2/3"):
 
             ui.label("Select a date").classes("event-label mb-1")
