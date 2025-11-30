@@ -1,6 +1,9 @@
 from nicegui import ui
 from datetime import datetime
 
+from frontend.theme import apply_global_theme
+from frontend.pages.home import add_shared_menu 
+
 # Store events
 calendar_events = []
 event_type = {"value": None}
@@ -71,6 +74,7 @@ def create_event(selected_date, event_type_name, start_time, end_time):
 # -------------------------
 @ui.page('/events')
 def events_page():
+    apply_global_theme()
     add_shared_menu()
 
     ui.label("Add a New Event").classes("events-title")
