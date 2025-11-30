@@ -13,7 +13,7 @@ def create_profile_page():
         with drawer:
             ui.label("Menu").classes("text-xl font-bold p-4")
             ui.separator()
-            ui.button("Home", on_click=lambda: ui.navigate.to("/"))
+            ui.button("Home", on_click=lambda: ui.navigate.to("/home"))
             ui.button("Upcoming Events", on_click=lambda: ui.navigate.to("/upcoming-events"))
             ui.button("Upcoming Homework", on_click=lambda: ui.notify("Upcoming Homework"))
             ui.button("Calendar", on_click=lambda: ui.notify("Calendar"))
