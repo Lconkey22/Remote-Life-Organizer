@@ -18,7 +18,7 @@ def add_shared_menu():
         ui.label("Menu").classes("text-xl font-bold p-4")
         ui.separator()
 
-        ui.button("Home", on_click=lambda: ui.navigate.to("/"))
+        ui.button("Home", on_click=lambda: ui.navigate.to("/home"))
         ui.button("Upcoming Events", on_click=lambda: ui.notify("Upcoming Events"))
         ui.button("Upcoming Homework", on_click=lambda: ui.notify("Upcoming Homework"))
         ui.button("Calendar", on_click=lambda: ui.notify("Calendar"))
@@ -96,7 +96,7 @@ def create_event(selected_date, event_type_name, start_time_str, end_time_str):
 # ----------------------------------
 # HOME PAGE
 # ----------------------------------
-@ui.page("/")
+@ui.page("/home")
 def home_page():
     add_shared_menu()
 
