@@ -94,21 +94,6 @@ def create_event(selected_date, event_type_name, start_time_str, end_time_str):
 
 
 # ----------------------------------
-# HOME PAGE
-# ----------------------------------
-@ui.page("/home")
-def home_page():
-    add_shared_menu()
-
-    with ui.column().classes("p-4 items-center space-y-6"):
-        for i in range(1, 4):
-            with ui.card().classes("w-96 h-64 overflow-auto border-2 border-gray-300"):
-                ui.label(f"Data Block {i}").classes("text-xl font-bold mb-2")
-                for j in range(20):
-                    ui.label(f"Item {j + 1} in block {i}")
-
-
-# ----------------------------------
 # EVENTS PAGE 
 # ----------------------------------
 @ui.page("/events")
