@@ -14,10 +14,10 @@ def create_profile_page():
             ui.label("Menu").classes("text-xl font-bold p-4")
             ui.separator()
             ui.button("Home", on_click=lambda: ui.navigate.to("/home"))
-            ui.button("Upcoming Events", on_click=lambda: ui.navigate.to("/upcoming-events"))
+            ui.button("Upcoming Events", on_click=lambda: ui.navigate.to("/upcomingevents"))
             ui.button("Upcoming Homework", on_click=lambda: ui.notify("Upcoming Homework"))
             ui.button("Calendar", on_click=lambda: ui.notify("Calendar"))
-            ui.button("Add Events", on_click=lambda: ui.navigate.to("/add-events"))
+            ui.button("Add Events", on_click=lambda: ui.navigate.to("/events"))
             ui.button("Time Tracker", on_click=lambda: ui.notify("Time Tracker"))
 
             ui.separator().classes("my-3")
