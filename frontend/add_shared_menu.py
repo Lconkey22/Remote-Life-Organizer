@@ -1,3 +1,6 @@
+from nicegui import ui
+from frontend.theme import apply_global_theme
+
 def add_shared_menu():
 
     drawer = ui.left_drawer(value=False).classes("earth-drawer shadow-xl")
