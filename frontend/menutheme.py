@@ -13,10 +13,10 @@ def add_shared_menu():
         buttons = [
             ("Home", "/home"),
             ("Upcoming Events", "/upcomingevents"),
-            ("Upcoming Homework", None),
+            ("Upcoming Homework", "/upcominghomework"),
             ("Calendar", None),
             ("Add Events", "/events"),
-            ("Time Tracker", None)
+            ("Time Tracker", "timetracker")
         ]
 
         for text, link in buttons:
