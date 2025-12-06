@@ -2,7 +2,7 @@ from nicegui import ui
 from datetime import datetime
 
 from frontend.theme import apply_global_theme
-from frontend.pages.home import add_shared_menu 
+from frontend.pages import add_shared_menu 
 
 # Store events
 calendar_events = []
