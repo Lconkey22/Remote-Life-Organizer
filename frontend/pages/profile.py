@@ -1,6 +1,6 @@
 from nicegui import ui
 from frontend.theme import apply_global_theme
-from frontend.add_shared_menu import add_shared_menu 
+from frontend.menutheme import add_shared_menu 
 
 # -------------------------
 # PROFILE PAGE  (/profile)
