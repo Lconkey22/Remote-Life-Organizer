@@ -1,7 +1,7 @@
 # -------------------------
 # UPCOMING HOMEWORK PAGE  (/homework)
 # -------------------------
-@ui.page('/homework')
+@ui.page('/upcominghomework')
 def upcoming_homework_page():
     apply_global_theme()
     add_shared_menu()
