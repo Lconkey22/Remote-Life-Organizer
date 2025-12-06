@@ -36,9 +36,27 @@ def add_shared_menu():
         ui.separator().classes("my-4")
         ui.button("Sign Out", on_click=lambda: ui.navigate.to("/login")).classes("signout-btn")
 
-    # ----- HEADER -----
-    with ui.header().classes("header-bar h-20 flex items-center px-4 shadow-lg"):
-        ui.button(icon="menu", on_click=lambda: drawer.toggle()).classes("hamburger")
 
-        ui.label("Remote Life Organizer").classes("earth-title ml-4")
+    # ---------- HEADER ----------
+    with ui.header().classes(
+        "header-bar h-20 flex items-center px-4 shadow-md"
+    ):
+        # Hamburger icon
+        ui.button(
+            icon="menu",
+            on_click=lambda: drawer.toggle()
+        ).classes("text-[#F4EDE1]")   # beige icon
+
+        # Center title/profile area
+        with ui.element("div").classes(
+            "absolute left-1/2 -translate-x-1/2 flex flex-col items-center"
+        ):
+            with ui.element("div").classes(
+                "w-12 h-12 rounded-full overflow-hidden border-2 border-[#D9C6A9]"
+            ):
+                ui.image("profile_picture_example.jpg").classes("w-full h-full object-cover")
+
+            ui.label("Hello, Username").classes(
+                "text-[#F4EDE1] font-semibold mt-1"
+            )
 
