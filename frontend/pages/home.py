@@ -16,7 +16,7 @@ def add_shared_menu():
 
         ui.button("Home", on_click=lambda: ui.navigate.to('/home')).classes("drawer-btn w-full text-left")
         ui.button("Upcoming Events", on_click=lambda: ui.navigate.to("/upcomingevents")).classes("drawer-btn w-full text-left")
-        ui.button("Upcoming Homework", on_click=lambda: ui.navigate.to('/homework')).classes("drawer-btn w-full text-left")
+        ui.button("Upcoming Homework", on_click=lambda: ui.navigate.to('/upcominghomework')).classes("drawer-btn w-full text-left")
         ui.button("Calendar", on_click=lambda: ui.notify("Calendar")).classes("drawer-btn w-full text-left")
         ui.button("Add Events", on_click=lambda: ui.navigate.to('/events')).classes("drawer-btn w-full text-left")
         ui.button("Time Tracker", on_click=lambda: ui.navigate.to("/timetracker")).classes("drawer-btn w-full text-left")
