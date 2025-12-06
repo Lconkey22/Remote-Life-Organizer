@@ -2,47 +2,43 @@ from nicegui import ui
 from frontend.theme import apply_global_theme
 
 def add_shared_menu():
+    apply_global_theme()
 
-    drawer = ui.left_drawer(value=False).classes("earth-drawer shadow-xl")
+    # ----- DRAWER -----
+    drawer = ui.left_drawer(value=False).classes("drawer-bg shadow-lg")
     with drawer:
+        ui.label("Menu").classes("text-xl font-bold p-4 text-[#2E4A3A]")
+        ui.separator()
 
-        ui.label("Menu").classes("earth-menu-title")
-
-        menu_items = [
+        buttons = [
             ("Home", "/home"),
             ("Upcoming Events", "/upcomingevents"),
-            ("Upcoming Homework", "/upcominghomework"),
+            ("Upcoming Homework", None),
             ("Calendar", None),
             ("Add Events", "/events"),
-            ("Time Tracker", "/timetracker"),
+            ("Time Tracker", None)
         ]
 
-        for label, route in menu_items:
-            ui.button(
-                label,
-                on_click=(lambda r=route: ui.navigate.to(r)) if route else (lambda l=label: ui.notify(l))
-            ).classes("earth-menu-btn")
+        for text, link in buttons:
+            if link:
+                ui.button(text, on_click=lambda l=link: ui.navigate.to(l)).classes("drawer-btn")
+            else:
+                ui.button(text, on_click=lambda t=text: ui.notify(t)).classes("drawer-btn")
+
+        ui.separator().classes("my-3")
+
+        for name in ["Settings", "Profile+", "Search", "Help"]:
+            ui.button(name, on_click=lambda n=name: ui.notify(n)).classes("drawer-btn")
 
         ui.separator().classes("my-4")
-
-        extra_items = ["Settings", "Profile+", "Search", "Help"]
-        for name in extra_items:
-            ui.button(name, on_click=lambda n=name: ui.notify(n)).classes("earth-menu-btn")
+        ui.button("Profile", on_click=lambda: ui.navigate.to("/profile")).classes("drawer-btn")
 
         ui.separator().classes("my-4")
+        ui.button("Sign Out", on_click=lambda: ui.navigate.to("/login")).classes("signout-btn")
 
-        ui.button("Profile", on_click=lambda: ui.navigate.to("/profile")).classes("earth-menu-btn")
+    # ----- HEADER -----
+    with ui.header().classes("header-bar h-20 flex items-center px-4 shadow-lg"):
+        ui.button(icon="menu", on_click=lambda: drawer.toggle()).classes("hamburger")
 
-        ui.button("Sign Out", on_click=lambda: ui.navigate.to('/login')).classes(
-            "earth-signout-btn"
-        )
-
-    # ---- HEADER BAR ----
-    with ui.header().classes("earth-header shadow-md"):
-        ui.button(icon="menu", on_click=lambda: drawer.toggle()).classes("earth-menu-icon")
-
-    with ui.element("div").classes("absolute left-1/2 -translate-x-1/2 flex flex-col items-center"):
-        with ui.element("div").classes("w-14 h-14 rounded-full overflow-hidden border-2 border-[#D9C6A9] shadow-md"):
-            ui.image("profile_picture_example.jpg").classes("w-full h-full object-cover")
-            ui.label("Hello, Username").classes("text-lg font-semibold mt-2 text-[#F4EDE1]")
+        ui.label("Remote Life Organizer").classes("earth-title ml-4")
 
