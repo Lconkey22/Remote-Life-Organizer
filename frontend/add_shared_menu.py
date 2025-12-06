@@ -40,3 +40,9 @@ def add_shared_menu():
     # ---- HEADER BAR ----
     with ui.header().classes("earth-header shadow-md"):
         ui.button(icon="menu", on_click=lambda: drawer.toggle()).classes("earth-menu-icon")
+
+    with ui.element("div").classes("absolute left-1/2 -translate-x-1/2 flex flex-col items-center"):
+        with ui.element("div").classes("w-14 h-14 rounded-full overflow-hidden border-2 border-[#D9C6A9] shadow-md"):
+            ui.image("profile_picture_example.jpg").classes("w-full h-full object-cover")
+            ui.label("Hello, Username").classes("text-lg font-semibold mt-2 text-[#F4EDE1]")
+
