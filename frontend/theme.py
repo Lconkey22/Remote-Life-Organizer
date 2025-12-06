@@ -21,35 +21,30 @@ def apply_global_theme():
             border-bottom: 2px solid #D9C6A9;
         }
 
-        .hamburger {
-            color: #D9C6A9 !important;
-        }
 
         /* -----------------------
            DRAWER / SIDEBAR
         ------------------------ */
         .drawer-bg {
-            background: #F4EDE1 !important;
+            background: #2E4A3A !important; /* forest green */
+            color: #F4EDE1 !important;      /* beige text */
         }
 
         .drawer-btn {
-            padding: 12px;
-            width: 100%;
+            color: #F4EDE1 !important;
+            font-weight: 500;
             text-align: left;
-            font-size: 16px;
-            font-weight: 600;
-            color: #2E4A3A !important;
-            border-radius: 8px;
         }
 
         .drawer-btn:hover {
-            background: #E6D9C7 !important;
+            background: #3C5A45 !important; /* lighter green hover */
         }
 
         .signout-btn {
-            color: #7A1F1F !important;
+            color: #D96A6A !important;
             font-weight: bold;
         }
+
 
         /* -----------------------
            CARDS / TEXT
