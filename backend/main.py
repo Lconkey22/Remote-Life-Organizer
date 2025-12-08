@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from backend.routers import tasks, events
-from backend.routers import homepage  # if you created homepage.py
+from .routers import tasks, events
+from .routers import homepage  # if you created homepage.py
 
 app = FastAPI()
 
@@ -14,7 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # replace with front-end URL
+    allow_origins=["http://localhost:8080"],  # replace with front-end URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

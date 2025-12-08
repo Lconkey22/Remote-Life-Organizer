@@ -7,8 +7,13 @@ router = APIRouter()
 tasks = [
     {"id": 1, "title": "Finish assignment", "due_date": "2025-11-15T12:00:00", "completed": False}
 ]
+
+# Categories = ["Family", "Homework", "Work", "Other"]
 events = [
-    {"id": 1, "name": "Team Meeting", "start_time": "2025-11-14T15:00:00", "end_time": "2025-11-14T16:00:00"}
+    {"id": 1, "name": "Team Meeting", "type": "Work", "start_time": "2025-11-14T15:00:00", "end_time": "2025-11-14T16:00:00"},
+    {"id": 1, "name": "Work on Python Assignment", "type": "Homework", "start_time": "2025-11-14T15:00:00", "end_time": "2025-11-14T16:00:00"},
+    {"id": 1, "name": "Family Christmas Party", "type": "Family", "start_time": "2025-11-14T15:00:00", "end_time": "2025-11-14T16:00:00"},
+    {"id": 1, "name": "Get my hair cut", "type": "Other", "start_time": "2025-11-14T15:00:00", "end_time": "2025-11-14T16:00:00"}
 ]
 
 @router.get("/homepage", response_model=HomepageData)

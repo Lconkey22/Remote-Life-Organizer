@@ -11,6 +11,7 @@ class Task(BaseModel):
 class Event(BaseModel):
     id: int
     name: str
+    type: str
     start_time: datetime
     end_time: datetime
 
