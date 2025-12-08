@@ -31,10 +31,12 @@ def login_page():
 
             def attempt_login():
                 ui.navigate.to('/home')
-
+                
             ui.button("Login", on_click=attempt_login).classes(
-                "event-btn w-full mt-4 py-2 text-white font-semibold rounded-lg"
+                "w-full mt-4 py-2 rounded-lg font-semibold "
+                "bg-[#2E4A3A] hover:bg-[#243A2F] text-[#F4EDE1] shadow-md"
             )
+
 
             ui.label("Need an account? (Coming soon)").classes(
                 "earth-text text-sm mt-3 text-center"

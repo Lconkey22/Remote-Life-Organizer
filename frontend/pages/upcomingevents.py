@@ -1,6 +1,6 @@
 from nicegui import ui
 from frontend.theme import apply_global_theme
-from frontend.pages.home import add_shared_menu 
+from frontend.menutheme import add_shared_menu 
 
 
 @ui.page('/upcomingevents')
