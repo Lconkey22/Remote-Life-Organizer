@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from ..models.data_models import HomepageData, Task, Event
+from backend.models.data_models import HomepageData, Task, Event
 
 router = APIRouter()
 
