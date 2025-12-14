@@ -32,9 +32,11 @@ async def complete_task(task_id: int) -> dict[str, Any]:
         return r.json()
 
 
+# pylint: disable=too-many-arguments
 async def get_events(
     *,
     type_: Optional[str] = None,
+    completed: Optional[bool] = None,
     start_after: Optional[datetime] = None,
     start_before: Optional[datetime] = None,
     limit: int = 100,
@@ -45,6 +47,8 @@ async def get_events(
     params: dict[str, Any] = {"limit": limit, "offset": offset}
     if type_ is not None:
         params["type"] = type_
+    if completed is not None:
+        params["completed"] = completed
     if start_after is not None:
         params["start_after"] = _maybe_iso(start_after)
     if start_before is not None:
@@ -52,6 +56,15 @@ async def get_events(
 
     async with httpx.AsyncClient(base_url=API_BASE_URL) as client:
         r = await client.get("/events/", params=params)
+        r.raise_for_status()
+        return r.json()
+
+
+async def set_event_completed(event_id: int, completed: bool) -> dict[str, Any]:
+    """Set an event's completion status in the backend."""
+
+    async with httpx.AsyncClient(base_url=API_BASE_URL) as client:
+        r = await client.patch(f"/events/{event_id}", json={"completed": completed})
         r.raise_for_status()
         return r.json()
 

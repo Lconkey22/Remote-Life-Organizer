@@ -1,4 +1,8 @@
+"""CRUD/API tests for the FastAPI backend."""
+
 from __future__ import annotations
+
+# pylint: disable=redefined-outer-name
 
 from datetime import date, datetime, timedelta
 
@@ -12,6 +16,7 @@ from backend.store.memory_store import InMemoryStore
 
 @pytest.fixture()
 def client() -> TestClient:
+    """FastAPI test client with an isolated in-memory store."""
     store = InMemoryStore()
 
     def _override_store() -> InMemoryStore:
@@ -25,6 +30,7 @@ def client() -> TestClient:
 
 
 def test_tasks_crud_and_complete(client: TestClient) -> None:
+    """Tasks should support CRUD operations and the /complete shortcut."""
     due = (datetime.now() + timedelta(days=1)).isoformat()
     create_resp = client.post("/tasks/", json={"title": "Test task", "due_date": due})
     assert create_resp.status_code == 201
@@ -57,6 +63,7 @@ def test_tasks_crud_and_complete(client: TestClient) -> None:
 
 
 def test_events_crud_and_validation(client: TestClient) -> None:
+    """Events should support CRUD operations, validation, and completion patching."""
     start = datetime.now() + timedelta(hours=1)
     end = start + timedelta(hours=2)
     create_resp = client.post(
@@ -71,10 +78,21 @@ def test_events_crud_and_validation(client: TestClient) -> None:
     assert create_resp.status_code == 201
     event = create_resp.json()
     assert event["id"] == 1
+    assert event["completed"] is False
 
     list_resp = client.get("/events/?type=Work")
     assert list_resp.status_code == 200
     assert len(list_resp.json()) == 1
+    assert list_resp.json()[0]["completed"] is False
+
+    complete_resp = client.patch("/events/1", json={"completed": True})
+    assert complete_resp.status_code == 200
+    assert complete_resp.json()["completed"] is True
+
+    completed_list = client.get("/events/?completed=true")
+    assert completed_list.status_code == 200
+    assert len(completed_list.json()) == 1
+    assert completed_list.json()[0]["completed"] is True
 
     bad_create = client.post(
         "/events/",
@@ -87,7 +105,10 @@ def test_events_crud_and_validation(client: TestClient) -> None:
     )
     assert bad_create.status_code == 422
 
-    bad_patch = client.patch("/events/1", json={"end_time": (start - timedelta(hours=1)).isoformat()})
+    bad_patch = client.patch(
+        "/events/1",
+        json={"end_time": (start - timedelta(hours=1)).isoformat()},
+    )
     assert bad_patch.status_code == 422
 
     delete_resp = client.delete("/events/1")
@@ -95,6 +116,7 @@ def test_events_crud_and_validation(client: TestClient) -> None:
 
 
 def test_homework_crud(client: TestClient) -> None:
+    """Homework should support CRUD operations and completion filtering."""
     create_resp = client.post(
         "/homework/",
         json={
@@ -122,11 +144,17 @@ def test_homework_crud(client: TestClient) -> None:
 
 
 def test_time_entries_crud_and_validation(client: TestClient) -> None:
+    """Time entries should support CRUD operations and validation."""
     start = datetime.now() - timedelta(hours=2)
     end = datetime.now() - timedelta(hours=1)
     create_resp = client.post(
         "/time-entries/",
-        json={"type": "Work", "start_time": start.isoformat(), "end_time": end.isoformat(), "note": "Deep work"},
+        json={
+            "type": "Work",
+            "start_time": start.isoformat(),
+            "end_time": end.isoformat(),
+            "note": "Deep work",
+        },
     )
     assert create_resp.status_code == 201
     entry = create_resp.json()
@@ -136,7 +164,10 @@ def test_time_entries_crud_and_validation(client: TestClient) -> None:
     assert get_resp.status_code == 200
     assert get_resp.json()["note"] == "Deep work"
 
-    bad_patch = client.patch("/time-entries/1", json={"end_time": (start - timedelta(hours=1)).isoformat()})
+    bad_patch = client.patch(
+        "/time-entries/1",
+        json={"end_time": (start - timedelta(hours=1)).isoformat()},
+    )
     assert bad_patch.status_code == 422
 
     delete_resp = client.delete("/time-entries/1")
@@ -144,8 +175,12 @@ def test_time_entries_crud_and_validation(client: TestClient) -> None:
 
 
 def test_homepage_aggregates_from_store(client: TestClient) -> None:
+    """Homepage should aggregate tasks/events from the store."""
     now = datetime.now()
-    client.post("/tasks/", json={"title": "Soon", "due_date": (now + timedelta(days=1)).isoformat()})
+    client.post(
+        "/tasks/",
+        json={"title": "Soon", "due_date": (now + timedelta(days=1)).isoformat()},
+    )
     client.post(
         "/events/",
         json={
@@ -162,4 +197,3 @@ def test_homepage_aggregates_from_store(client: TestClient) -> None:
     assert len(data["tasks"]) == 1
     assert len(data["events"]) == 1
     assert len(data["notifications"]) >= 1
-

@@ -113,6 +113,7 @@ class InMemoryStore:
         self,
         *,
         type_: Optional[str] = None,
+        completed: Optional[bool] = None,
         start_after: Optional[datetime] = None,
         start_before: Optional[datetime] = None,
         limit: int = 100,
@@ -121,6 +122,8 @@ class InMemoryStore:
         events = list(self._events_by_id.values())
         if type_ is not None:
             events = [e for e in events if e.type == type_]
+        if completed is not None:
+            events = [e for e in events if e.completed == completed]
         if start_after is not None:
             events = [e for e in events if e.start_time >= start_after]
         if start_before is not None:

@@ -44,6 +44,7 @@ class EventBase(BaseModel):
     type: str = Field(min_length=1)
     start_time: datetime
     end_time: datetime
+    completed: bool = False
 
     @model_validator(mode="after")
     def validate_time_order(self) -> "EventBase":
@@ -65,6 +66,7 @@ class EventUpdate(BaseModel):
     type: Optional[str] = Field(default=None, min_length=1)
     start_time: Optional[datetime] = None
     end_time: Optional[datetime] = None
+    completed: Optional[bool] = None
 
     @model_validator(mode="after")
     def validate_time_order_if_provided(self) -> "EventUpdate":

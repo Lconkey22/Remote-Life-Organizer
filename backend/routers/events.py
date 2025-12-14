@@ -20,6 +20,7 @@ DEFAULT_LIMIT = 100
 @router.get("/", response_model=List[EventRead])
 def list_events(
     type_: Optional[str] = Query(default=None, alias="type"),
+    completed: Optional[bool] = None,
     start_after: Optional[datetime] = None,
     start_before: Optional[datetime] = None,
     limit: int = Query(default=DEFAULT_LIMIT, ge=0, le=1000),
@@ -30,6 +31,7 @@ def list_events(
 
     return store.list_events(
         type_=type_,
+        completed=completed,
         start_after=start_after,
         start_before=start_before,
         limit=limit,

@@ -1,7 +1,12 @@
 """NiceGUI Home page (dashboard)."""
 
+from __future__ import annotations
+
 from nicegui import ui
-from frontend.api_client import get_homepage
+
+import httpx
+
+from frontend import api_client
 from frontend.theme import apply_global_theme
 from frontend.menutheme import add_shared_menu
 
@@ -10,14 +15,14 @@ from frontend.menutheme import add_shared_menu
 # HOME PAGE  (/home)
 # -------------------------
 @ui.page('/home')
-async def home_page():
+async def home_page() -> None:
     """Render the dashboard with upcoming events grouped by category."""
     apply_global_theme()
     add_shared_menu()
 
-    data = await get_homepage()
+    data = await api_client.get_homepage()
 
-    events = data['events']
+    events = data["events"]
 
     ui.label("Your Dashboard").classes("home-title text-center mt-6")
 
@@ -33,26 +38,57 @@ async def home_page():
 
                 if filtered_events:
                     for event in filtered_events:
-                        event.setdefault("completed", False)
+                        event_id = event.get("id")
+                        is_completed = bool(event.get("completed", False))
 
                         with ui.row().classes("items-center mb-1 space-x-2"):
                             label = ui.label(
                                 f"{event['name']}: {event['start_time']}"
                             )
 
-                            label.classes("line-through" if event["completed"] else "")
+                            if is_completed:
+                                label.classes(add="line-through")
 
-                            def make_callback(ev, lbl):
-                                def cb(value):
-                                    ev["completed"] = value
-                                    lbl.classes('line-through' if value else '')
+                            async def _on_toggle(
+                                e,
+                                *,
+                                ev=event,
+                                ev_id=event_id,
+                                lbl=label,
+                            ) -> None:
+                                cb = e.sender
+                                if ev_id is None:
+                                    ui.notify(
+                                        "Event is missing an id; cannot update completion.",
+                                        color="red",
+                                    )
+                                    cb.value = bool(ev.get("completed", False))
+                                    return
 
-                                return cb
+                                previous = bool(ev.get("completed", False))
+                                requested = bool(e.value)
 
-                            ui.checkbox(
-                                value = event["completed"],
-                                on_change = make_callback(event, label)
-                            )
+                                try:
+                                    updated = await api_client.set_event_completed(ev_id, requested)
+                                except httpx.HTTPError as exc:
+                                    ui.notify(
+                                        f"Failed to update event completion: {exc}",
+                                        color="red",
+                                    )
+                                    cb.value = previous
+                                    if previous:
+                                        lbl.classes(add="line-through")
+                                    else:
+                                        lbl.classes(remove="line-through")
+                                    return
+
+                                ev["completed"] = bool(updated.get("completed", requested))
+                                if ev["completed"]:
+                                    lbl.classes(add="line-through")
+                                else:
+                                    lbl.classes(remove="line-through")
+
+                            ui.checkbox(value=is_completed, on_change=_on_toggle)
 
                 else:
                     ui.label("No upcoming events")
