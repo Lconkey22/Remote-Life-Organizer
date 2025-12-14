@@ -1,29 +1,48 @@
-from fastapi import APIRouter
-from backend.models.data_models import HomepageData, Task, Event
+"""Homepage aggregation routes."""
+
+from __future__ import annotations
+
+from datetime import datetime, timedelta
+from typing import List
+
+from fastapi import APIRouter, Depends, Query
+
+from backend.dependencies import get_store
+from backend.models.data_models import HomepageData
+from backend.store.memory_store import InMemoryStore
 
 router = APIRouter()
 
-# Sample in-memory data
-tasks = [
-    {"id": 1, "title": "Finish assignment", "due_date": "2025-11-15T12:00:00", "completed": False}
-]
+def _build_notifications(tasks, events) -> List[str]:
+    """Create a small list of human-readable dashboard notifications."""
 
-# Categories = ["Family", "Homework", "Work", "Other"]
-events = [
-    {"id": 1, "name": "Team Meeting", "type": "Work", "start_time": "2025-11-14T15:00:00", "end_time": "2025-11-14T16:00:00"},
-    {"id": 1, "name": "Work on Python Assignment", "type": "Homework", "start_time": "2025-11-14T15:00:00", "end_time": "2025-11-14T16:00:00"},
-    {"id": 1, "name": "Family Christmas Party", "type": "Family", "start_time": "2025-11-14T15:00:00", "end_time": "2025-11-14T16:00:00"},
-    {"id": 1, "name": "Get my hair cut", "type": "Other", "start_time": "2025-11-14T15:00:00", "end_time": "2025-11-14T16:00:00"}
-]
+    notifications: List[str] = []
+    for task in tasks:
+        notifications.append(f"Task due {task.due_date.isoformat()}: {task.title}")
+    for event in events:
+        notifications.append(
+            f"Upcoming {event.type} event at {event.start_time.isoformat()}: {event.name}"
+        )
+    return notifications[:10]
+
 
 @router.get("/homepage", response_model=HomepageData)
-async def get_homepage():
-    return {"tasks": tasks, "events": events, "notifications": ["Meeting at 3 PM", "New assignment uploaded"]}
+async def get_homepage(
+    days: int = Query(default=7, ge=0, le=365),
+    tasks_limit: int = Query(default=10, ge=0, le=100),
+    events_limit: int = Query(default=10, ge=0, le=100),
+    store: InMemoryStore = Depends(get_store),
+) -> HomepageData:
+    """Return dashboard data scoped to the next N days."""
 
-@router.patch("/tasks/{task_id}/complete")
-async def complete_task(task_id: int):
-    for task in tasks:
-        if task["id"] == task_id:
-            task["completed"] = True
-            return {"message": "Task completed!"}
-    return {"error": "Task not found"}
+    now = datetime.now()
+    horizon = now + timedelta(days=days)
+
+    tasks = store.list_tasks(
+        completed=False, due_before=horizon, limit=tasks_limit, offset=0
+    )
+    events = store.list_events(
+        start_after=now, start_before=horizon, limit=events_limit, offset=0
+    )
+    notifications = _build_notifications(tasks, events)
+    return HomepageData(tasks=tasks, events=events, notifications=notifications)
