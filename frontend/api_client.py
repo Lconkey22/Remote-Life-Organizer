@@ -56,6 +56,27 @@ async def get_events(
         return r.json()
 
 
+async def create_event(
+    *,
+    name: str,
+    type_: str,
+    start_time: datetime,
+    end_time: datetime,
+) -> dict[str, Any]:
+    """Create an event in the backend."""
+
+    payload = {
+        "name": name,
+        "type": type_,
+        "start_time": _maybe_iso(start_time),
+        "end_time": _maybe_iso(end_time),
+    }
+    async with httpx.AsyncClient(base_url=API_BASE_URL) as client:
+        r = await client.post("/events/", json=payload)
+        r.raise_for_status()
+        return r.json()
+
+
 async def get_time_entries(
     *,
     type_: Optional[str] = None,
