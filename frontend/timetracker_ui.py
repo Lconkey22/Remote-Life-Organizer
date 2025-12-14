@@ -5,8 +5,10 @@ This module intentionally avoids NiceGUI imports to keep it unit-testable.
 
 from __future__ import annotations
 
+from datetime import date, datetime, time, timedelta
 from dataclasses import dataclass
 from html import escape
+from typing import Any, Iterable
 
 
 DAYS_SHORT: tuple[str, ...] = ("Sun.", "Mon.", "Tue.", "Wed.", "Th.", "Fri.", "Sat.")
@@ -23,6 +25,7 @@ class TimeBlock:
     start_min: int
     end_min: int
     label: str | None = None
+    tooltip: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -31,6 +34,133 @@ class TimeTrackerSection:
 
     title: str
     blocks: tuple[TimeBlock, ...]
+
+
+def week_start_sunday(day: date) -> date:
+    """Return the Sunday for the week containing `day`."""
+
+    days_since_sunday = (day.weekday() + 1) % 7  # Mon=0..Sun=6 -> Sun=0
+    return day - timedelta(days=days_since_sunday)
+
+
+def _parse_datetime(value: Any) -> datetime:
+    if isinstance(value, datetime):
+        return value
+    if isinstance(value, str):
+        # FastAPI returns ISO 8601 strings; these are parseable by fromisoformat.
+        return datetime.fromisoformat(value)
+    raise TypeError(f"Unsupported datetime value: {type(value)!r}")
+
+
+def _minutes_from_chart_start(dt: datetime, *, start_hour: int) -> int:
+    start_dt = datetime.combine(dt.date(), time(hour=start_hour))
+    return int((dt - start_dt).total_seconds() // 60)
+
+
+def _format_12h_from_chart_minutes(minutes_from_chart_start: int, *, start_hour: int) -> str:
+    """Format minutes from chart start (start_hour:00) into 12-hour time."""
+
+    anchor = datetime(2000, 1, 1, start_hour, 0)
+    t = anchor + timedelta(minutes=int(minutes_from_chart_start))
+    return t.strftime("%I:%M %p").lstrip("0")
+
+
+def _coerce_same_day_span(start_dt: datetime, end_dt: datetime) -> tuple[datetime, datetime]:
+    """Clamp a span to the start day if it crosses midnight."""
+
+    if start_dt.date() == end_dt.date():
+        return start_dt, end_dt
+    end_of_start_day = datetime.combine(start_dt.date(), time.max).replace(microsecond=0)
+    return start_dt, end_of_start_day
+
+
+@dataclass(frozen=True, slots=True)
+class _SpanBlockContext:
+    blocks_by_title: dict[str, list[TimeBlock]]
+    week_start: date
+    start_hour: int
+
+
+def _add_span_block(
+    ctx: _SpanBlockContext,
+    *,
+    title: str,
+    start_dt: datetime,
+    end_dt: datetime,
+    label: str,
+) -> None:
+    start_dt, end_dt = _coerce_same_day_span(start_dt, end_dt)
+
+    day_index = (start_dt.date() - ctx.week_start).days
+    if not 0 <= day_index < 7:
+        return
+
+    start_min = _minutes_from_chart_start(start_dt, start_hour=ctx.start_hour)
+    end_min = _minutes_from_chart_start(end_dt, start_hour=ctx.start_hour)
+    start_str = _format_12h_from_chart_minutes(start_min, start_hour=ctx.start_hour)
+    end_str = _format_12h_from_chart_minutes(end_min, start_hour=ctx.start_hour)
+
+    if label:
+        tooltip = f"{label} — {start_str}–{end_str}"
+    else:
+        tooltip = f"{start_str}–{end_str}"
+
+    ctx.blocks_by_title.setdefault(title, []).append(
+        TimeBlock(
+            day_index=day_index,
+            start_min=start_min,
+            end_min=end_min,
+            label=label,
+            tooltip=tooltip,
+        )
+    )
+
+
+def build_sections_from_api(
+    *,
+    events: Iterable[dict[str, Any]],
+    time_entries: Iterable[dict[str, Any]],
+    week_start: date,
+    start_hour: int = 8,
+) -> list[TimeTrackerSection]:
+    """Convert API events/time-entries into timeline-renderable sections."""
+
+    blocks_by_title: dict[str, list[TimeBlock]] = {}
+    ctx = _SpanBlockContext(
+        blocks_by_title=blocks_by_title, week_start=week_start, start_hour=start_hour
+    )
+
+    for event in events:
+        start_dt = _parse_datetime(event["start_time"])
+        end_dt = _parse_datetime(event["end_time"])
+        _add_span_block(
+            ctx,
+            title=str(event.get("type") or "Other"),
+            start_dt=start_dt,
+            end_dt=end_dt,
+            label=str(event.get("name") or ""),
+        )
+
+    for entry in time_entries:
+        start_dt = _parse_datetime(entry["start_time"])
+        end_dt = _parse_datetime(entry["end_time"])
+        note = entry.get("note")
+        label = str(note) if note else str(entry.get("type") or "")
+        _add_span_block(
+            ctx,
+            title=str(entry.get("type") or "Other"),
+            start_dt=start_dt,
+            end_dt=end_dt,
+            label=label,
+        )
+
+    sections: list[TimeTrackerSection] = []
+    for title, blocks in blocks_by_title.items():
+        blocks.sort(key=lambda b: (b.day_index, b.start_min, b.end_min))
+        sections.append(TimeTrackerSection(title=title, blocks=tuple(blocks)))
+
+    sections.sort(key=lambda s: s.title.lower())
+    return sections
 
 
 def build_time_axis_labels(start_hour: int, end_hour: int) -> list[str]:
@@ -85,7 +215,7 @@ def _render_rows_html(blocks_by_day: list[list[TimeBlock]], total_minutes: int) 
 
             left_pct = (start_min / total_minutes) * 100
             width_pct = ((end_min - start_min) / total_minutes) * 100
-            tooltip = escape(block.label or "")
+            tooltip = escape(block.tooltip or block.label or "")
             parts.append(
                 (
                     '<div class="tt-bar" '

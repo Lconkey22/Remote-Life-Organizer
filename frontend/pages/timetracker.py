@@ -1,15 +1,26 @@
-"""NiceGUI Time Tracker page (frontend-only, demo data)."""
+"""NiceGUI Time Tracker page."""
 
+from __future__ import annotations
+
+from datetime import date, datetime, time, timedelta
+
+import httpx
 from nicegui import ui
+
+from frontend.api_client import get_events, get_time_entries
 from frontend.theme import apply_global_theme
 from frontend.menutheme import add_shared_menu
 
-from frontend.timetracker_ui import get_demo_sections, render_week_timeline_html
+from frontend.timetracker_ui import (
+    build_sections_from_api,
+    render_week_timeline_html,
+    week_start_sunday,
+)
 
 
 @ui.page('/timetracker')
-def timetracker_page():
-    """Render the Time Tracker page UI (not yet wired to backend)."""
+async def timetracker_page() -> None:
+    """Render the Time Tracker page UI wired to backend data."""
 
     apply_global_theme()
     add_shared_menu()
@@ -19,7 +30,28 @@ def timetracker_page():
         "filter": "All",
     }
 
-    demo_sections = get_demo_sections()
+    week_start = week_start_sunday(date.today())
+    week_start_dt = datetime.combine(week_start, time.min)
+    week_end_dt = week_start_dt + timedelta(days=7)
+
+    try:
+        events = await get_events(start_after=week_start_dt, start_before=week_end_dt, limit=1000)
+        time_entries = await get_time_entries(
+            start_after=week_start_dt,
+            start_before=week_end_dt,
+            limit=1000,
+        )
+    except (httpx.HTTPError, ValueError) as exc:
+        ui.notify(f"Failed to load time tracker data: {exc}")
+        events = []
+        time_entries = []
+
+    sections_all = build_sections_from_api(
+        events=events,
+        time_entries=time_entries,
+        week_start=week_start,
+    )
+    filter_options = ["All"] + [s.title for s in sections_all]
 
     with ui.column().classes("w-full items-center"):
         with ui.row().classes("w-11/12 md:w-2/3 items-center justify-between mt-2"):
@@ -40,7 +72,7 @@ def timetracker_page():
 
             with ui.row().classes("w-full items-center justify-center mt-3"):
                 ui.select(
-                    ["All", "Work/School", "Homework", "Self Care"],
+                    filter_options,
                     value=state["filter"],
                     on_change=lambda e: set_filter(e.value),
                 ).classes("tt-filter w-40")
@@ -52,8 +84,8 @@ def timetracker_page():
     def _filtered_sections() -> list:
         selection = state["filter"]
         if selection == "All":
-            return demo_sections
-        return [s for s in demo_sections if s.title == selection]
+            return sections_all
+        return [s for s in sections_all if s.title == selection]
 
     def render() -> None:
         if state["view"] == "Day":

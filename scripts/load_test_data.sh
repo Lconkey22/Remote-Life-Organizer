@@ -34,6 +34,18 @@ curl_json POST "/tasks/" '{"title":"Plan week","due_date":"2025-12-19T09:00:00",
 echo
 
 echo "Loading events..."
+curl_json POST "/events/" '{"name":"Meal Prep","type":"Other","start_time":"2025-12-14T12:00:00","end_time":"2025-12-14T13:00:00"}'
+echo
+curl_json POST "/events/" '{"name":"Morning Run","type":"Self Care","start_time":"2025-12-15T08:30:00","end_time":"2025-12-15T09:15:00"}'
+echo
+curl_json POST "/events/" '{"name":"Office Hours","type":"Work","start_time":"2025-12-16T10:00:00","end_time":"2025-12-16T12:00:00"}'
+echo
+curl_json POST "/events/" '{"name":"Study CIS","type":"Homework","start_time":"2025-12-17T09:00:00","end_time":"2025-12-17T11:00:00"}'
+echo
+curl_json POST "/events/" '{"name":"Therapy Appointment","type":"Self Care","start_time":"2025-12-18T13:00:00","end_time":"2025-12-18T14:00:00"}'
+echo
+curl_json POST "/events/" '{"name":"Project Sprint","type":"Work","start_time":"2025-12-19T11:00:00","end_time":"2025-12-19T15:00:00"}'
+echo
 curl_json POST "/events/" '{"name":"Team Meeting","type":"Work","start_time":"2025-12-20T15:00:00","end_time":"2025-12-20T16:00:00"}'
 echo
 curl_json POST "/events/" '{"name":"Work on Python Assignment","type":"Homework","start_time":"2025-12-21T10:00:00","end_time":"2025-12-21T12:00:00"}'
