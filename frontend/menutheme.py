@@ -12,7 +12,6 @@ def add_shared_menu():
 
         buttons = [
             ("Home", "/home"),
-            ("Upcoming Events", "/upcomingevents"),
             ("Upcoming Homework", "/upcominghomework"),
             ("Calendar", "/calendar"),
             ("Add Events", "/events"),
