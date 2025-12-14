@@ -14,7 +14,7 @@ def add_shared_menu():
             ("Home", "/home"),
             ("Upcoming Events", "/upcomingevents"),
             ("Upcoming Homework", "/upcominghomework"),
-            ("Calendar", None),
+            ("Calendar", "/calendar"),
             ("Add Events", "/events"),
             ("Time Tracker", "timetracker")
         ]
