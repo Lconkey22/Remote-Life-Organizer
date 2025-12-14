@@ -197,3 +197,57 @@ def test_homepage_aggregates_from_store(client: TestClient) -> None:
     assert len(data["tasks"]) == 1
     assert len(data["events"]) == 1
     assert len(data["notifications"]) >= 1
+
+
+def test_events_day_range_filtering_by_start_time(client: TestClient) -> None:
+    """Events list should filter by start_after/start_before for a single day."""
+
+    day = date(2025, 1, 2)
+
+    def _create_event(*, name: str, start_dt: datetime, end_dt: datetime) -> int:
+        resp = client.post(
+            "/events/",
+            json={
+                "name": name,
+                "type": "Work",
+                "start_time": start_dt.isoformat(),
+                "end_time": end_dt.isoformat(),
+            },
+        )
+        assert resp.status_code == 201
+        return int(resp.json()["id"])
+
+    id_prev = _create_event(
+        name="Previous day",
+        start_dt=datetime(2025, 1, 1, 10, 0, 0),
+        end_dt=datetime(2025, 1, 1, 11, 0, 0),
+    )
+    id_target_1 = _create_event(
+        name="Target morning",
+        start_dt=datetime(2025, 1, 2, 9, 0, 0),
+        end_dt=datetime(2025, 1, 2, 10, 0, 0),
+    )
+    id_target_2 = _create_event(
+        name="Target evening",
+        start_dt=datetime(2025, 1, 2, 23, 0, 0),
+        end_dt=datetime(2025, 1, 2, 23, 30, 0),
+    )
+    id_next = _create_event(
+        name="Next day",
+        start_dt=datetime(2025, 1, 3, 10, 0, 0),
+        end_dt=datetime(2025, 1, 3, 11, 0, 0),
+    )
+
+    start_after = datetime.combine(day, datetime.min.time())
+    start_before = datetime.combine(day, datetime.max.time())
+
+    list_resp = client.get(
+        "/events/",
+        params={"start_after": start_after.isoformat(), "start_before": start_before.isoformat()},
+    )
+    assert list_resp.status_code == 200
+    ids = [e["id"] for e in list_resp.json()]
+    assert ids == [id_target_1, id_target_2]
+
+    assert id_prev not in ids
+    assert id_next not in ids
