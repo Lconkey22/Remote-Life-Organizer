@@ -1,6 +1,9 @@
+"""NiceGUI Home page (dashboard)."""
+
 from nicegui import ui
+from frontend.api_client import get_homepage
 from frontend.theme import apply_global_theme
-from frontend.menutheme import add_shared_menu 
+from frontend.menutheme import add_shared_menu
 
 
 # -------------------------
@@ -8,14 +11,13 @@ from frontend.menutheme import add_shared_menu
 # -------------------------
 @ui.page('/home')
 async def home_page():
+    """Render the dashboard with upcoming events grouped by category."""
     apply_global_theme()
     add_shared_menu()
 
     data = await get_homepage()
 
-    tasks = data['tasks']
     events = data['events']
-    notifications = data['notifications']
 
     ui.label("Your Dashboard").classes("home-title text-center mt-6")
 
@@ -54,4 +56,3 @@ async def home_page():
 
                 else:
                     ui.label("No upcoming events")
-

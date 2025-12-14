@@ -1,5 +1,7 @@
 fastapi[standard]
 uvicorn
 pydantic
+httpx
+nicegui
 pytest
 pylint
