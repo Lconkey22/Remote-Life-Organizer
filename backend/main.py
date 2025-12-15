@@ -3,7 +3,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import events, homepage, homework, tasks, time_entries
+from backend.routers import events, homepage, homework, tasks, time_entries
 
 app = FastAPI()
 
